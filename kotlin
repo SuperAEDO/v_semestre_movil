@@ -1,0 +1,66 @@
+import javax.swing.*
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
+
+data class Estudiante(val nombre: String, val documento: String, val correo: String, val notaParcial: Double)
+
+class AplicacionEstudiante : JFrame() {
+    private val nombreField = JTextField(20)
+    private val documentoField = JTextField(20)
+    private val correoField = JTextField(20)
+    private val notaField = JTextField(20)
+    private val resultadoArea = JTextArea(10, 30)
+
+    init {
+        title = "Captura de Estudiante"
+        setSize(400, 300)
+        defaultCloseOperation = EXIT_ON_CLOSE
+        layout = BoxLayout(contentPane, BoxLayout.Y_AXIS)
+
+        add(JLabel("Nombre:"))
+        add(nombreField)
+        add(JLabel("Documento:"))
+        add(documentoField)
+        add(JLabel("Correo:"))
+        add(correoField)
+        add(JLabel("Nota Parcial:"))
+        add(notaField)
+
+        val botonGuardar = JButton("Guardar")
+        botonGuardar.addActionListener(GuardarEstudianteAction())
+        add(botonGuardar)
+
+        resultadoArea.isEditable = false
+        add(JScrollPane(resultadoArea))
+
+        isVisible = true
+    }
+
+    private inner class GuardarEstudianteAction : ActionListener {
+        override fun actionPerformed(e: ActionEvent) {
+            val nombre = nombreField.text
+            val documento = documentoField.text
+            val correo = correoField.text
+            val nota = notaField.text.toDoubleOrNull()
+
+            if (nombre.isNotEmpty() && documento.isNotEmpty() && correo.isNotEmpty() && nota != null) {
+                val estudiante = Estudiante(nombre, documento, correo, nota)
+                resultadoArea.append(estudiante.toString() + "\n")
+                limpiarCampos()
+            } else {
+                JOptionPane.showMessageDialog(this@AplicacionEstudiante, "Por favor, complete todos los campos correctamente.")
+            }
+        }
+
+        private fun limpiarCampos() {
+            nombreField.text = ""
+            documentoField.text = ""
+            correoField.text = ""
+            notaField.text = ""
+        }
+    }
+}
+
+fun main() {
+    SwingUtilities.invokeLater { AplicacionEstudiante() }
+}
